@@ -20,37 +20,40 @@ closeCart.addEventListener("click", function() {
 //Load products
 function renderProducts() {
     //Render  products to the Page
-
-    products.forEach((product) => {
-        let productBox = document.createElement("div");
-        productBox.classList.add("product-box");
-
-        productList.innerHTML += `
-        <div class="product-box">
-        <img src=${product.image} alt="" class="product-img" onclick=productDetail(${product.id}) />
-        <h2 class="product-title">${product.title}</h2>
-        <span class="price">${product.price}</span>
-        <i class="bx bx-shopping-bag add-cart" onclick="addToCart(${product.id})" ></i>
-        <!--<i class='bx bxs-show' onclick=productDetail(${product.id})></i>-->
- 
-      </div>
-        `;
-    });
+    // fetch products
+    fetch("./products.json")
+        .then((res) => res.json())
+        .then((data) => {
+            data.forEach((product) => {
+                productList.innerHTML += `
+            <div class="product-box">
+            <img class="product-img" src="${product.image}" alt="t-shirt 1" onclick="productDetail(${product.id})" />
+            <h4 class="product-title">${product.title}</h4>
+            <span class="price"> €${product.price}</span>
+            <i class="bx bx-shopping-bag add-cart" onclick="addToCart(${product.id})" ></i>
+            </div>
+            `;
+            });
+        });
 }
 renderProducts();
 
 //product detail
 function productDetail(id) {
-    let product = products.find((product) => product.id == id);
-    let productDetail = document.querySelector(".product-detail-container");
-    productDetail.style.display = "block";
-    window.onclick = function(event) {
-        if (event.target == productDetail) {
-            productDetail.style.display = "none";
-        }
-    };
+    fetch("./products.json")
+        .then((res) => res.json())
+        .then((data) => {
+            let product = data.find((product) => product.id == id);
 
-    productDetail.innerHTML = `
+            let productDetail = document.querySelector(".product-detail-container");
+            productDetail.style.display = "block";
+            window.onclick = function(event) {
+                if (event.target == productDetail) {
+                    productDetail.style.display = "none";
+                }
+            };
+
+            productDetail.innerHTML = `
   <div class="product-detail">
   <img src=${product.image} alt="" class="product-img" />
   <h2 class="product-title">${product.title}</h2>
@@ -58,7 +61,9 @@ function productDetail(id) {
   <i class="bx bx-shopping-bag add-cart" onclick="addToCart(${product.id})" ></i>
   </div>
   `;
+        });
 }
+
 //close modal
 const closeDetailModal = () => {
     let productDetail = document.querySelector(".product-detail-container");
@@ -70,15 +75,20 @@ const closeDetailModal = () => {
 //Cart Array
 let cart = [];
 const addToCart = (id) => {
-    if (cart.some((item) => item.id === id)) {
-        alert("Item already in cart");
-    } else {
-        let cartItem = products.find((item) => item.id === id);
-        console.log("cartItem", cartItem);
-        cart.push({...cartItem, quantity: 1 });
-    }
-    updateCart();
+    fetch("./products.json")
+        .then((res) => res.json())
+        .then((data) => {
+            if (cart.some((item) => item.id === id)) {
+                alert("Item already in cart");
+            } else {
+                let cartItem = data.find((item) => item.id === id);
+                console.log("cartItem", cartItem);
+                cart.push({...cartItem, quantity: 1 });
+            }
+            updateCart();
+        });
 };
+
 //Update Cart
 const updateCart = () => {
     renderCartItems();
