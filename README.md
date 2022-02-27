@@ -2,6 +2,10 @@
 
 ### [Demo](https://munahsopy.netlify.app/)
 
+### Technology
+
+- HTML5, CSS3 and Vanilla Js
+
 ### Features
 
 1.  Responsive Layout
